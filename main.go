@@ -13,19 +13,21 @@ import (
 
 
 // Порт для запуска сервера
-const ADDR string = ":7777"
+const (
+    PORT = ":7777"
+    COUNT_ENTITIES = 1
+)
 
 // Создание игрового мира
 var world = game.World{Width: 40, Height: 40}
 
 
 func main() {
-    log.Print("Server started at 127.0.0.1" + ADDR)
-
+    log.Print("Server started at 127.0.0.1" + PORT)
     log.Println("Started entity creation...")
     // Создание и добавления в игровой мир сущностей
     x := 0
-    for x < 1 {
+    for x < COUNT_ENTITIES {
         entity := game.NewEntity("Name #" + strconv.Itoa(x), world.RandomPostion())
         world.AddEntity(entity)
         x += 1
@@ -46,7 +48,7 @@ func main() {
     log.Println("All handlers started...")
 
     // Запуск сервера
-    if err := http.ListenAndServe(":7777", nil); err != nil {
+    if err := http.ListenAndServe(PORT, nil); err != nil {
         log.Fatal("ListenAndServe:", err)
     }
 }
