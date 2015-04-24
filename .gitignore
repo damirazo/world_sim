@@ -1,4 +1,7 @@
 main
+play.iml
 
 [glob]
 src/github.com/*
+.idea/*
+pkg/*
