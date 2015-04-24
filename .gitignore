@@ -1,7 +1,10 @@
 main
+world_sim
 play.iml
 
 [glob]
 src/github.com/*
+src/9fans.net/*
+src/golang.org/*
 .idea/*
 pkg/*
