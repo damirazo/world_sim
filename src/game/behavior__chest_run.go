@@ -10,44 +10,46 @@ package game
 // 1. HasTarget - выбрал ли персонаж себе цель
 // 2. Target    - координаты выбранной цели
 // -------------------
-func ChestRun(world *World, _entity Entity) {
-	entity := _entity.(*Unit)
-	chest := entity.Storage.Get("Chest", nil).(*Chest)
+func ChestRun(world *World, e Entity) {
+	u := e.(*unit)
+	ch := u.Get("chest").(*chest)
+	pos := u.GetPosition()
+	speed := u.speed
 
-	if chest == nil {
+	if ch == nil {
 		return
-	} else if entity.Position.Equal(chest.Position) {
-		chest.SetPosition(world.RandomPosition())
+	} else if pos.Equal(ch.position) {
+		ch.SetPosition(world.RandomPosition())
 		return
 	}
 
-	target := chest.GetPosition()
+	target := ch.GetPosition()
 
-	if entity.Position.X > target.X {
-		entity.Position.X -= entity.Speed
-		if entity.Position.X <= target.X {
-			entity.Position.X = target.X
+	if pos.X > target.X {
+		pos.X -= speed
+		if pos.X <= target.X {
+			pos.X = target.X
 		}
 	}
 
-	if entity.Position.X < target.X {
-		entity.Position.X += entity.Speed
-		if entity.Position.X >= target.X {
-			entity.Position.X = target.X
+	if pos.X < target.X {
+		pos.X += speed
+		if pos.X >= target.X {
+			pos.X = target.X
 		}
 	}
 
-	if entity.Position.Y > target.Y {
-		entity.Position.Y -= entity.Speed
-		if entity.Position.Y <= target.Y {
-			entity.Position.Y = target.Y
+	if pos.Y > target.Y {
+		pos.Y -= speed
+		if pos.Y <= target.Y {
+			pos.Y = target.Y
 		}
 	}
 
-	if entity.Position.Y < target.Y {
-		entity.Position.Y += entity.Speed
-		if entity.Position.Y >= target.Y {
-			entity.Position.Y = target.Y
+	if pos.Y < target.Y {
+		pos.Y += speed
+		if pos.Y >= target.Y {
+			pos.Y = target.Y
 		}
 	}
 }

@@ -1,21 +1,20 @@
 package game
 
-type Unit struct {
-	*_Entity
-	// Speed of unit at per tick
-	Speed int
+type unit struct {
+	*entity
+	speed int
 }
 
-func NewUnit(name string, position *Position) *Unit {
-	unit := &Unit{Speed: 1}
-	unit._Entity = NewEntity(name, position)
-	unit.Type = "unit"
+func NewUnit(name string, position *Position) *unit {
+	u := &unit{speed: 1}
+	u.entity = newEntity(name, position)
+	u._type = "unit"
 
 	b := &Behavior{}
 	b.Name = "Chest Run"
 	b.TickLogic = ChestRun
 
-	unit.SetCurrentBehavior(b)
+	u.SetCurrentBehavior(b)
 
-	return unit
+	return u
 }

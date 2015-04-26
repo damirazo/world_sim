@@ -1,99 +1,92 @@
 package game
 
+import "encoding/json"
+
 // Количество пропускаемых тиков
 const SKIP_TICK = 0
 
 type Entity interface {
-	GetPosition() *Position
-	SetPosition(*Position)
+    GetPosition() *Position
+    SetPosition(*Position)
 
-	GetCurrentBehavior() *Behavior
-	SetCurrentBehavior(*Behavior)
+    GetCurrentBehavior() *Behavior
+    SetCurrentBehavior(*Behavior)
+
+    Get(string) interface{}
+    GetWithDefault(string, interface{}) interface{}
+    Set(string, interface{})
 }
 
-// Структура сущности
-type _Entity struct {
-	// Тип сущности
-	Type string `json:"type"`
-	// Имя
-	Name string `json:"name"`
-	// Текущие координаты
-	Position *Position `json:"position"`
-	// Тик предыдущего обновления
-	prevTick int64 `json:"-"`
-	// Текущее поведение
-	CurrentBehavior *Behavior `json:"-"`
-	// Дополнительные параметры сущности
-	Storage *EntityParamStorage `json:"-"`
+type entity struct {
+    _type    string
+    state    string
+    name     string
+    position *Position
+    // Тик предыдущего обновления
+    prevTick        int64
+    currentBehavior *Behavior
+    context         map[string]interface{}
 }
 
-// Создание экземпляра структур
-func NewEntity(name string, position *Position) *_Entity {
-	entity := &_Entity{}
-	entity.Name = name
-	entity.Position = position
-	entity.Storage = &EntityParamStorage{}
-	return entity
+func newEntity(name string, position *Position) *entity {
+    e := &entity{}
+    e.name = name
+    e.position = position
+    e.context = map[string]interface{}{}
+    return e
 }
 
 // Position
 // ---------------------------------------------------------------------------
 
-func (entity *_Entity) GetPosition() *Position {
-	return entity.Position
+func (e *entity) GetPosition() *Position {
+    return e.position
 }
 
-func (entity *_Entity) SetPosition(position *Position) {
-	entity.Position = position
+func (e *entity) SetPosition(position *Position) {
+    e.position = position
 }
 
 // CurrentBehavior
 // ---------------------------------------------------------------------------
 
-func (entity *_Entity) SetCurrentBehavior(behavior *Behavior) {
-	entity.CurrentBehavior = behavior
+func (e *entity) SetCurrentBehavior(behavior *Behavior) {
+    e.currentBehavior = behavior
 }
 
-func (entity *_Entity) GetCurrentBehavior() *Behavior {
-	return entity.CurrentBehavior
+func (e *entity) GetCurrentBehavior() *Behavior {
+    return e.currentBehavior
 }
 
+// Context
 // ---------------------------------------------------------------------------
 
-// Хранилище дополнительных параметров сущности
-type EntityParamStorage struct {
-	Params []*EntityParam
+func (e *entity) Get(param string) interface{} {
+    return e.context[param]
 }
 
-// Получение из хранилища параметра с указанным ключем
-func (storage *EntityParamStorage) Get(key string, def interface{}) interface{} {
-	for _, param := range storage.Params {
-		if param.Key == key {
-			return param.Value
-		}
-	}
-
-	return def
+func (e *entity) GetWithDefault(param string, _default interface{}) interface{} {
+    if val := e.Get(param); val != nil {
+        return val
+    }
+    return _default
 }
 
-// Добавление / замена параметра в хранилище
-// Возвращает true, если был создан новый параметр, false при замене существующего параметра
-func (storage *EntityParamStorage) Set(key string, value interface{}) bool {
-	for _, param := range storage.Params {
-		if param.Key == key {
-			param.Value = value
-			return false
-		}
-	}
-
-	newParam := &EntityParam{Key: key, Value: value}
-	storage.Params = append(storage.Params, newParam)
-
-	return true
+func (e *entity) Set(param string, value interface{}) {
+    e.context[param] = value
 }
 
-// Параметр сущности
-type EntityParam struct {
-	Key   string
-	Value interface{}
+// Interface Marshaller
+// ---------------------------------------------------------------------------
+
+func (e *entity) MarshalJSON() ([]byte, error) {
+    return json.Marshal(struct {
+        Type     string    `json:"type"`
+        Name     string    `json:"name"`
+        Position *Position `json:"position"`
+    }{
+        e._type,
+        e.name,
+        e.position,
+    })
 }

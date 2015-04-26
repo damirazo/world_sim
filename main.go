@@ -29,7 +29,7 @@ func main() {
 
 	for x := 0; x < COUNT_ENTITIES; x++ {
 		unit := game.NewUnit("Name #"+strconv.Itoa(x), world.RandomPosition())
-		unit.Storage.Set("Chest", chest)
+		unit.Set("chest", chest)
 		world.AddEntity(unit)
 	}
 

@@ -1,12 +1,12 @@
 package game
 
-type Chest struct {
-    *_Entity
+type chest struct {
+	*entity
 }
 
-func NewChest(name string, position *Position) *Chest {
-    chest := &Chest{}
-    chest._Entity = NewEntity(name, position)
-	chest.Type = "chest"
-    return chest
+func NewChest(name string, position *Position) *chest {
+    c := &chest{}
+    c.entity = newEntity(name, position)
+	c._type = "chest"
+    return c
 }
