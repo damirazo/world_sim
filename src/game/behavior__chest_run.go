@@ -1,6 +1,5 @@
 package game
 
-
 // Поведение сущности
 // -------------------
 // Выбирается случайное место на карте, в котором создается сундук,
@@ -11,45 +10,46 @@ package game
 // 1. HasTarget - выбрал ли персонаж себе цель
 // 2. Target    - координаты выбранной цели
 // -------------------
-func ChestRun(world *World, entity *Entity) {
-    hasTarget := entity.Storage.Get("HasTarget", false).(bool)
-    randomPosition := world.RandomPostion()
+func ChestRun(world *World, e Entity) {
+	u := e.(*unit)
+	ch := u.Get("chest").(*chest)
+	pos := u.GetPosition()
+	speed := u.speed
 
-    if !hasTarget {
-        entity.Storage.Set("HasTarget", true)
-        entity.Storage.Set("Target", randomPosition)
-    } else if (entity.Position.Equal(entity.Storage.Get("Target", &Position{}).(*Position))) {
-        entity.Storage.Set("HasTarget", false)
-        return
-    }
+	if ch == nil {
+		return
+	} else if pos.Equal(ch.position) {
+		ch.SetPosition(world.RandomPosition())
+		return
+	}
 
-    target := entity.Storage.Get("Target", &Position{}).(*Position)
+	target := ch.GetPosition()
 
-    if entity.Position.X > target.X {
-        entity.Position.X -= entity.Speed
-        if entity.Position.X <= target.X {
-            entity.Position.X = target.X
-        }
-    }
+	if pos.X > target.X {
+		pos.X -= speed
+		if pos.X <= target.X {
+			pos.X = target.X
+		}
+	}
 
-    if entity.Position.X < target.X {
-        entity.Position.X += entity.Speed
-        if entity.Position.X >= target.X {
-            entity.Position.X = target.X
-        }
-    }
+	if pos.X < target.X {
+		pos.X += speed
+		if pos.X >= target.X {
+			pos.X = target.X
+		}
+	}
 
-    if entity.Position.Y > target.Y {
-        entity.Position.Y -= entity.Speed
-        if entity.Position.Y <= target.Y {
-            entity.Position.Y = target.Y
-        }
-    }
+	if pos.Y > target.Y {
+		pos.Y -= speed
+		if pos.Y <= target.Y {
+			pos.Y = target.Y
+		}
+	}
 
-    if entity.Position.Y < target.Y {
-        entity.Position.Y += entity.Speed
-        if entity.Position.Y >= target.Y {
-            entity.Position.Y = target.Y
-        }
-    }
+	if pos.Y < target.Y {
+		pos.Y += speed
+		if pos.Y >= target.Y {
+			pos.Y = target.Y
+		}
+	}
 }
