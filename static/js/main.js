@@ -5,7 +5,7 @@ window.onload = function() {
 
     var characterImage1 = document.getElementById("char1");
     var characterImage2 = document.getElementById("char2");
-    //var targetImage = document.getElementById("chest");
+    var targetImage = document.getElementById("chest");
 
     var ws = new WebSocket("ws://127.0.0.1:7777/game");
 
@@ -24,10 +24,21 @@ window.onload = function() {
         data.forEach(function(playerParams) {
             var x = playerParams.position['X'];
             var y = playerParams.position['Y'];
+            var storage = playerParams.storage.Params;
 
-            //var target = playerParams.Target;
+            var target;
+            storage.forEach(function(o) {
+                if (o['Key'] == "Target") {
+                    target = o["Value"];
+                    return;
+                }
+            });
 
-            //context.drawImage(targetImage, (target.X * multiplier) - 10, (target.Y * multiplier) - 10);
+            if (target === undefined) {
+                throw "Target is not setted!";
+            }
+
+            context.drawImage(targetImage, (target.X * multiplier) - 10, (target.Y * multiplier) - 10);
             context.drawImage(img, (x * multiplier) - 10, (y * multiplier) - 16);
         });
 

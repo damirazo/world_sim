@@ -18,7 +18,7 @@ type Entity struct {
     // Текущее поведение
     CurrentBehavior *Behavior               `json:"-"`
     // Дополнительные параметры сущности
-    Storage *EntityParamStorage             `json:"-"`
+    Storage *EntityParamStorage             `json:"storage"`
 }
 
 // Создание экземпляра структуры
